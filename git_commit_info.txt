@@ -1,0 +1,5 @@
+git config user.name "lolloleone93"
+git config user.email "leone.lorenzo@hotmail.it"
+git add .
+git commit -m "Il tuo messaggio di commit"
+git push origin main
