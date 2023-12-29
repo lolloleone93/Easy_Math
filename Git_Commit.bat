@@ -35,3 +35,7 @@ echo Nome Utente: %original_username%
 echo Email: %original_email%
 echo ----------------------------
 
+
+REM Pause per mantenere aperta la console
+pause
+
