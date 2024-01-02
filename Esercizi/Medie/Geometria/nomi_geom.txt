@@ -1,0 +1,14 @@
+Gli enti fondamentali della geometria(punto, linea, superficie)
+I segmenti e problemi a essi correlati
+Gli angoli e le rette
+I poligoni
+I triangoli
+I quadrilateri
+Isoperimetria ed equivalenza di figure piane
+Calcolo di perimetri e aree di figure piane
+Teorema di Pitagora e sue applicazioni
+Applicazione del Teorema di Pitagora
+Circonferenza e cerchio
+Prismi 
+Piramidi
+Solidi di rotazione (cilindro e cono)
