@@ -1,0 +1,28 @@
+{
+  "esercizi": [
+    {
+      "tipo_materia": "Aritmetica",
+      "argomenti": "Monomi e Polinomi",
+      "esercizio": "Semplifica il monomio 3x^2 * 2x^3",
+      "soluzione": "6x^5"
+    },
+    {
+      "tipo_materia": "Aritmetica",
+      "argomenti": "Monomi e Polinomi",
+      "esercizio": "Semplifica il polinomio (4x^2 - 2x) + (3x^2 + 5x)",
+      "soluzione": "7x^2 + 3x"
+    },
+    {
+      "tipo_materia": "Aritmetica",
+      "argomenti": "Equazioni 1° grado",
+      "esercizio": "Risolvi l'equazione 2x + 5 = 11",
+      "soluzione": "x = 3"
+    },
+    {
+      "tipo_materia": "Aritmetica",
+      "argomenti": "Equazioni 1° grado",
+      "esercizio": "Risolvi l'equazione 3(x - 4) = 15",
+      "soluzione": "x = 7"
+    }
+  ]
+}

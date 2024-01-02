@@ -1,0 +1,27 @@
+{
+    "MacroArgomenti": {
+        "Polinomi": {
+            "Argomento 1": [
+                {
+                    "id": 1,
+                    "domanda": "Risolvere l'equazione \(2x^2 + 5x - 3 = 0\)",
+                    "risposta": "x = 1 o x = -1.5"
+                },
+                // Altri esercizi per Argomento 1 di Polinomi
+            ],
+            "Argomento 2": [
+                {
+                    "id": 1,
+                    "domanda": "Semplificare \(3x^2 + (2x - 4)\)",
+                    "risposta": "3x^2 + 2x - 4"
+                },
+                // Altri esercizi per Argomento 2 di Polinomi
+            ],
+            // Altri argomenti sotto il macro argomento "Polinomi"
+        },
+        "Algebra Lineare": {
+            // Struttura simile per l'argomento "Algebra Lineare"
+        },
+        // Altri macro argomenti
+    }
+}
