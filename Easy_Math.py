@@ -228,9 +228,6 @@ class PrimaFinestra:
         
         os.startfile(output_file)
 
-                
-
-    
     def apri_seconda_finestra(self):
          generatore_verifiche = GeneratoreVerifiche((self.root))
          generatore_verifiche.run()
@@ -271,6 +268,46 @@ class GeneratoreVerifiche:
         seleziona_button.grid(row=len(self.strutture)+10, column=0, columnspan=2, pady=10)
         genera_test_button.grid(row=len(self.strutture)+10, column=2, columnspan=2, pady=10)
         btn_clear.grid(row=len(self.strutture)+12, column=2, columnspan=2, pady=10)
+
+
+         # 6. Menu in cima
+        barra_menu = tk.Menu(self.root)
+        self.root.config(menu=barra_menu)
+
+        # Menu File
+        menu_file = tk.Menu(barra_menu, tearoff=0)
+        barra_menu.add_cascade(label="File", menu=menu_file)
+        menu_file.add_command(label="Esci", command=self.root.destroy)
+
+        # Menu Strumenti
+        menu_strumenti = tk.Menu(barra_menu, tearoff=0)
+        barra_menu.add_cascade(label="Strumenti", menu=menu_strumenti)
+        menu_strumenti.add_command(label="Estrai Argomenti da JSON", command=self.estrai_argomenti_json)
+
+    
+    def estrai_argomenti_json(self):
+        tipo_scelto =   self.opzione_media.get()
+        primo_combobox = self.strutture[0].comboboxes[0]
+        materia_es = primo_combobox.get()
+        percorso_json = parent_directory+'\\Verifiche Input\\'+tipo_scelto+'\\'+materia_es
+        json_file = [f for f in os.listdir(percorso_json) if f.endswith('.json')][0]
+        json_path = os.path.join(percorso_json, json_file)
+        output_file=parent_directory+'\\Output Esercizi\\'
+
+        # Leggi il JSON
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+
+                    # Estrai gli argomenti unici
+            argomenti_unici = list(set(esercizio["argomento"] for esercizio in data["esercizi"]))
+            with open(output_file+tipo_scelto+'_'+materia_es+'_Argomenti_JSON.txt', "w", encoding="utf-8") as file:
+                    for argomento in argomenti_unici:
+                        file.write(f"{argomento}\n")
+
+        
+        os.startfile(output_file)
+       
         
     def crea_struttura(self):
        
@@ -335,8 +372,6 @@ class GeneratoreVerifiche:
             prima_combobox = struttura.comboboxes[0]
             prima_combobox["values"] = nomi_cartelle
     
-                
-
     def aggiorna_tipo_argomento(self, event, arg_combobox, *args):
         idx = arg_combobox.master.grid_info()["row"]
    
@@ -375,24 +410,6 @@ class GeneratoreVerifiche:
             for combobox in struttura.comboboxes:
                 combobox.set("")
 
-    def carica_argomenti_da_json(self):
-        # Sostituisci con il percorso effettivo del tuo JSON
-        
-
-        tipo_scelto =   self.opzione_media.get()
-        materia_es = self.ti
-        percorso_json = parent_directory+'\\Verifiche Input\\'+tipo_scelto+'\\'+materia_es
-
-        if os.path.exists(percorso_json):
-            with open(percorso_json, 'r', encoding='utf-8') as file:
-                data = json.load(file)
-                return data.get("argomenti", [])
-        else:
-            return []
-
-
-        # Implementa la logica per selezionare gli esercizi
-        pass
 
     def mostra_esercizi(self):
         #finestra_selezione = tk.Toplevel(self.root)
@@ -430,6 +447,7 @@ class GeneratoreVerifiche:
             #self.list_box.insert(tk.END, f"Argomento: {esercizio['argomento']} | Esercizio: {esercizio['esercizio']} | Soluzione: {esercizio['soluzione']} \n")
             self.list_box.insert(tk.END, f"Argomento: {esercizio['argomento']}   |   Esercizio {a} :  {espressione_pattern}  \n")
             a+=1
+    
     def genera_test_casuale(self):
         # Ottieni gli indici degli elementi selezionati
         selezionati = self.list_box.curselection()
