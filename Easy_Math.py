@@ -11,6 +11,9 @@ import io
 import json
 import tkinter as tk
 from PIL import Image
+import json
+import tkinter as tk
+from tkinter import messagebox
 import random
 from tkinter import ttk, filedialog
 from tkinter import scrolledtext
@@ -32,7 +35,7 @@ class PrimaFinestra:
         self.root.title("Easy Math")
 
         # Imposta le dimensioni della finestra principale
-        self.root.geometry("465x850")  # Modifica le dimensioni secondo necessità
+        self.root.geometry("518x865")  # Modifica le dimensioni secondo necessità
 
         row_init=0
         column_init=0
@@ -61,7 +64,7 @@ class PrimaFinestra:
         # Aggiungi una label per il tipo di materia
         label_tipo_materia = tk.Label(root, text="Materia:")
         label_tipo_materia.grid(row=row_init+3, column=column_init, padx=10, pady=5, sticky="w")
-        # 3. Menù a tendina per Argomenti
+        # 3. Menù a tendina per Matera
         self.materia_var = tk.StringVar()
         self.materia_menu = ttk.Combobox(root, textvariable=self.materia_var, state="readonly",width=70)
         
@@ -69,15 +72,24 @@ class PrimaFinestra:
         self.materia_menu.grid(row=row_init+4, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
 
 
-        # Aggiungi una label per il tipo di scuola
+      
         label_tipo_argomenti = tk.Label(root, text="Argomenti:")
         label_tipo_argomenti.grid(row=row_init+6, column=column_init, padx=10, pady=5, sticky="w")
         # 3. Menù a tendina per Argomenti
+        self.argomenti = []
+        self.filtered_argomenti = []
         self.argomenti_var = tk.StringVar()
         self.argomenti_menu = ttk.Combobox(root, textvariable=self.argomenti_var, state="readonly",width=70)
         
-        self.argomenti_menu.grid(row=row_init+7, column=column_init, pady=5, padx=10)  # Modifica le dimensioni secondo necessità
-        self.argomenti_menu.grid(row=row_init+7, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
+        self.search_entry = tk.Entry(root, width=70,foreground="gray", font=("Arial", 10, "italic"))
+        self.search_entry.insert(0, "Cerca...")
+        self.search_entry.grid(row=row_init+7, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
+
+
+        self.argomenti_menu.grid(row=row_init+8, column=column_init, pady=5, padx=10)  # Modifica le dimensioni secondo necessità
+        self.argomenti_menu.grid(row=row_init+8, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
+
+
 
         # 4. Listbox per selezionare i file
         self.file_listbox = tk.Listbox(root, selectmode=tk.SINGLE, width=70, height=30)  # Modifica le dimensioni secondo necessità
@@ -121,6 +133,38 @@ class PrimaFinestra:
         self.argomenti_var.trace_add("write", self.aggiorna_lista_file)
         self.opzione_var.trace_add("write", self.aggiorna_lista_file)
 
+        self.update_combobox()
+        self.search_entry.bind("<FocusIn>", self.clear_placeholder)
+        self.search_entry.bind("<FocusOut>", self.restore_placeholder)
+        self.search_entry.bind("<KeyRelease>", self.filter_items)
+
+    def update_combobox(self):
+        tipo_scuola_selezionato = self.tipo_scuola_menu.get()
+        materia_selezionata= self.materia_menu.get()
+        opzione_selezionata = self.opzione_var.get()
+        if materia_selezionata:
+        # Aggiorna il menù a tendina degli argomenti in base ai valori selezionati
+        # Ad esempio, puoi combinare i valori di tipo_scuola_selezionato e opzione_selezionata per ottenere i percorsi corretti
+            path_arg=parent_directory+'\\'+opzione_selezionata+'\\'+tipo_scuola_selezionato +'\\'+materia_selezionata
+
+            self.argomenti= [nome for nome in os.listdir(path_arg) if os.path.isdir(os.path.join(path_arg, nome))]
+            self.argomenti_menu["values"] = self.filtered_argomenti
+
+    def filter_items(self, event):
+        search_text = self.search_entry.get().lower()
+        self.filtered_argomenti = [argomento for argomento in self.argomenti if search_text in argomento.lower()]
+        self.update_combobox()
+
+    def clear_placeholder(self, event):
+        if self.search_entry.get() == "Cerca...":
+            self.search_entry.delete(0, tk.END)
+            self.search_entry.config(foreground="black", font=("Arial", 10, "normal"))
+
+    def restore_placeholder(self, event):
+        if not self.search_entry.get():
+            self.search_entry.insert(0, "Cerca...")
+            self.search_entry.config(foreground="gray", font=("Arial", 10, "italic"))    
+  
     def aggiorna_primo_menu(self, *args):
         # Callback chiamata quando cambia il valore di opzione_var
         # Aggiorna il primo menù a tendina in base alla scelta dell'opzione
@@ -159,8 +203,10 @@ class PrimaFinestra:
         # Ad esempio, puoi combinare i valori di tipo_scuola_selezionato e opzione_selezionata per ottenere i percorsi corretti
             path_arg=parent_directory+'\\'+opzione_selezionata+'\\'+tipo_scuola_selezionato +'\\'+materia_selezionata
             try:
-                nomi_cartelle = [nome for nome in os.listdir(path_arg) if os.path.isdir(os.path.join(path_arg, nome))]
-                self.argomenti_menu ["values"] = nomi_cartelle
+                self.argomenti= [nome for nome in os.listdir(path_arg) if os.path.isdir(os.path.join(path_arg, nome))]
+                self.filtered_argomenti = self.argomenti
+                self.argomenti_menu ["values"] = self.filtered_argomenti
+
             except FileNotFoundError:
                 print(f"")
         
@@ -259,7 +305,7 @@ class GeneratoreVerifiche:
         opzione_superiore_button.grid(row=0, column=2, columnspan=2,padx=(10, 50), pady=10, sticky="w")
 
         for i, struttura in enumerate(self.strutture):
-            struttura.grid(row=i+1, column=0, columnspan=4, pady=5)
+            struttura.grid(row=i+1, column=0, columnspan=4,padx=7, pady=5)
 
         #self.text_box = scrolledtext.ScrolledText(self.root, width=65, height=10)
         self.list_box = tk.Listbox(self.root, selectmode=tk.MULTIPLE, width=120, height=30)
@@ -268,6 +314,14 @@ class GeneratoreVerifiche:
         seleziona_button.grid(row=len(self.strutture)+10, column=0, columnspan=2, pady=10)
         genera_test_button.grid(row=len(self.strutture)+10, column=2, columnspan=2, pady=10)
         btn_clear.grid(row=len(self.strutture)+12, column=2, columnspan=2, pady=10)
+
+
+         # Dichiarazione della variabile globale
+        self.soluzione_checkbox_var = tk.IntVar()
+        # Aggiungi un check box e un testo con l'etichetta "Soluzione"
+        self.soluzione_checkbox = ttk.Checkbutton(self.root, text="Soluzione", variable=self.soluzione_checkbox_var)
+        self.soluzione_checkbox.grid(row=len(self.strutture)+10, column=0,columnspan=2, padx=25,pady=10, sticky="w")
+
 
 
          # 6. Menu in cima
@@ -283,6 +337,7 @@ class GeneratoreVerifiche:
         menu_strumenti = tk.Menu(barra_menu, tearoff=0)
         barra_menu.add_cascade(label="Strumenti", menu=menu_strumenti)
         menu_strumenti.add_command(label="Estrai Argomenti da JSON", command=self.estrai_argomenti_json)
+        menu_strumenti.add_command(label="Check Duplicati JSON", command=self.find_duplicates)
 
     
     def estrai_argomenti_json(self):
@@ -307,8 +362,7 @@ class GeneratoreVerifiche:
 
         
         os.startfile(output_file)
-       
-        
+         
     def crea_struttura(self):
        
         struttura = ttk.Frame(self.root)
@@ -410,7 +464,6 @@ class GeneratoreVerifiche:
             for combobox in struttura.comboboxes:
                 combobox.set("")
 
-
     def mostra_esercizi(self):
         #finestra_selezione = tk.Toplevel(self.root)
         #finestra_selezione.title("Seleziona Esercizi")
@@ -442,11 +495,17 @@ class GeneratoreVerifiche:
         self.esercizi_generati = esercizi
            # Aggiunta degli esercizi alla text box
         a=1
-        for esercizio in esercizi:          
-            espressione_pattern = self.converti_latex_to_pattern(esercizio['esercizio'])
-            #self.list_box.insert(tk.END, f"Argomento: {esercizio['argomento']} | Esercizio: {esercizio['esercizio']} | Soluzione: {esercizio['soluzione']} \n")
-            self.list_box.insert(tk.END, f"Argomento: {esercizio['argomento']}   |   Esercizio {a} :  {espressione_pattern}  \n")
-            a+=1
+        for esercizio in esercizi: 
+            if self.soluzione_checkbox_var.get() == 1: 
+                espressione_pattern_es = self.converti_latex_to_pattern(esercizio['esercizio'])
+                espressione_pattern_sol = self.converti_latex_to_pattern(esercizio['soluzione'])
+                self.list_box.insert(tk.END, f"Argomento: {esercizio['argomento']} | Esercizio {a}:  {espressione_pattern_es} | Soluzione:  {espressione_pattern_sol} \n")
+                a+=1        
+            else:
+                espressione_pattern = self.converti_latex_to_pattern(esercizio['esercizio'])
+            
+                self.list_box.insert(tk.END, f"Argomento: {esercizio['argomento']}   |   Esercizio {a} :  {espressione_pattern}  \n")
+                a+=1
     
     def genera_test_casuale(self):
         # Ottieni gli indici degli elementi selezionati
@@ -474,9 +533,60 @@ class GeneratoreVerifiche:
             os.startfile(output_file_name)   
 
     def converti_latex_to_pattern(self,espressione_latex):
-        pattern = re.compile(r"\\frac{(\d+)}{(\d+)}")
-        espressione_pattern = pattern.sub(r"\1/\2", espressione_latex)
-        return espressione_pattern
+
+        text=espressione_latex
+         # Sostituisci il simbolo di integrale
+        text = re.sub(r'\\int', '\u222b', text)
+
+        # Sostituisci il pattern per la frazione
+        text = re.sub(r'\\frac{(.*?)}{(.*?)}', r'\1/\2', text)
+
+        # Sostituisci altri pattern specifici
+        text = re.sub(r'\\sin', 'sin', text)
+
+        text = re.sub(r'\\cos', 'cos', text)
+
+        text = re.sub(r'\\tan', 'tan', text)
+
+        text = re.sub(r'\\log', 'log', text)
+
+        text = re.sub(r'\\lim_{{([^}}]+)}}', r'lim{\1}', text)
+
+        text = re.sub(r'\\infty', 'inf', text)
+        
+        
+        
+        # Decodifica gli esponenti
+        text = re.sub(r'\^(\d+)', lambda match: ''.join(['⁰¹²³⁴⁵⁶⁷⁸⁹'[int(digit)] for digit in match.group(1)]), text)
+                # Decodifica gli esponenti
+         
+        # Sostituzioni dei simboli matematici
+        text = text.replace('=', ' = ')
+        text = text.replace('(', ' ( ')
+        text = text.replace(')', ' ) ')
+        text = text.replace('+', ' + ')
+        text = text.replace('-', ' - ')
+
+        # Sostituzione della radice quadrata con il simbolo Unicode
+        text = re.sub(r'\\sqrt{([^}]+)}', lambda match: '√(' + match.group(1) + ')', text)
+
+        text = re.sub(r'e\^{?(\w+)}?', lambda match: 'e^(' + match.group(1) + ')', text)
+        text = re.sub(r'e\^\((\w+)\)', lambda match: 'e^(' + match.group(1) + ')', text)
+
+
+        # Sostituzione delle parole nella forma \\text{parola} con solo "parola"
+        text = re.sub(r'\\text{([^}]+)}', lambda match: match.group(1), text)
+
+        # Sostituzione di "\\quad x \\neq" con "x ≠"
+        text = text.replace('\\quad x \\neq', 'x ≠')
+
+        # Sostituzione di "\\quad x \\neq \\pm x" con "x ≠ ± "
+        text = re.sub(r'\\pm', '±', text)
+
+
+
+        
+        return text
 
 
 ######################crea pdf formato canvas non simboli matematici################################
@@ -624,14 +734,19 @@ class GeneratoreVerifiche:
         # Leggi i valori dalla struttura
         opzione_selezionata = self.opzione_media.get()
         tipo_materia_var, argomenti_var, numeri_var = struttura.comboboxes
-        tipo_materia = tipo_materia_var.get()
-        argomento = argomenti_var.get()
-        num_esercizi = numeri_var.get()
+        state=str(tipo_materia_var["state"])
+        
+        # Verifica se la combobox è abilitata
+        if state.lower() != "disabled":
+            tipo_materia = tipo_materia_var.get()
+            argomento = argomenti_var.get()
+            num_esercizi = numeri_var.get()
+            if tipo_materia != "" and argomento != "" and num_esercizi != "":
+                return opzione_selezionata,tipo_materia,argomento,num_esercizi
+            else:
+                return None
 
-        if tipo_materia != "" and argomento != "" and num_esercizi != "":
-            return opzione_selezionata,tipo_materia,argomento,num_esercizi
-        else:
-            return None
+
 
     def leggi_esercizi_da_json(self,json_path, tipo_argomento):
         esercizi = []
@@ -654,6 +769,53 @@ class GeneratoreVerifiche:
     def clear_list_box(self):
         # Cancella il contenuto della list box
         self.list_box.delete(0, tk.END)
+
+    def find_duplicates(self):
+        tipo_scelto =   self.opzione_media.get()
+        primo_combobox = self.strutture[0].comboboxes[0]
+        materia_es = primo_combobox.get()
+        percorso_json = parent_directory+'\\Verifiche Input\\'+tipo_scelto+'\\'+materia_es
+        json_file = [f for f in os.listdir(percorso_json) if f.endswith('.json')][0]
+        json_path = os.path.join(percorso_json, json_file)
+    
+        esercizi_set = set()
+        duplicati = []
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+      
+  
+        for esercizio in data["esercizi"]:
+            esercizio_str = json.dumps(esercizio, sort_keys=True)
+            if esercizio_str in esercizi_set:
+                duplicati.append(esercizio)
+            else:
+                esercizi_set.add(esercizio_str)
+
+                    # Carica il tuo file JSON
+   
+        if duplicati:
+            print("Gli elementi duplicati sono:")
+            for duplicato in duplicati:
+                print(json.dumps(duplicato, indent=2))
+            conferma = messagebox.askyesno("Conferma Rimozione", "Sono presenti elementi duplicati. Vuoi rimuoverli?")
+            if conferma:
+                self.remove_duplicates(data, json_path,duplicati)
+                messagebox.showinfo("Rimozione Completata", "Elementi duplicati rimossi con successo.")
+            else:
+                messagebox.showinfo("Nessun Duplicato", "Nessun elemento duplicato trovato")
+        else:
+            print("Nessun elemento duplicato trovato.")
+
+        return duplicati
+
+    def remove_duplicates(self,json_data,json_path, duplicati):
+        for duplicato in duplicati:
+            json_data["esercizi"].remove(duplicato)
+        
+        with open(json_path, "w") as file:
+                json.dump(json_data, file, indent=2)
+
 
 if __name__ == "__main__":
     global current_dir 

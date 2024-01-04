@@ -46,3 +46,7 @@ Studio completo di una funzione
 Integrali indefiniti e definiti
 Integrali di volume 
 Equazioni differenziali di primo e secondo ordine
+
+
+###GEOMETRIA##############################
+

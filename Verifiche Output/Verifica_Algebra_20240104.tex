@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[italian]{babel}
+\usepackage[letterpaper,top=1.5cm,bottom=2cm,left=1.5cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{tabto}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\title{\raggedright Verifica di Matematica  4/1/2024}
+\date{}
+\begin{document}
+
+\maketitle
+
+\textbf{Esercizio 1 (Limiti forme indeterminate)}:\\
+\par $\lim_{{x \to \infty}} \frac{e^x}{x^2}$ \\\\
+
+\textit{[ Soluzione: $\lim_{{x \to \infty}} \frac{e^x}{x^2} = \infty$ ]}\\\\
+
+\textbf{Esercizio 2 (Limiti forme indeterminate)}:\\
+\par $\lim_{{x \to 2}} \frac{x^2 - 4}{\sqrt{x} - 2}$ \\\\
+
+\textit{[ Soluzione: $\lim_{{x \to 2}} \frac{x^2 - 4}{\sqrt{x} - 2} = \lim_{{x \to 2}} \frac{(x + 2)(x - 2)}{(\sqrt{x} - 2)(\sqrt{x} + 2)} = \lim_{{x \to 2}} \frac{x + 2}{\sqrt{x} + 2} = \frac{4}{3}$ ]}\\\\
+
+\textbf{Esercizio 3 (Studio di Funzione)}:\\
+\par $f(x) = \frac{x^3 - 2x^2 + 4}{x^2 + 3x + 2}$ \\\\
+
+\textit{[ Soluzione: $\quad x \neq -1, -2 , \text{  Asintoti Verticali}: x = -1, x = -2  ,   \text{  Asintoti Obliqui}: y = x - 1 ,  \text{  Massimi}: (-\frac{1}{2}, \frac{15}{4}),   \text{  Minimi}: (\frac{1}{2}, -\frac{1}{4})$ ]}\\\\
+
+\textbf{Esercizio 4 (Studio di Funzione)}:\\
+\par $f(x) = 3x^2 - 6x + 2$ \\\\
+
+\textit{[ Soluzione: $\text{  Asintoti Verticali}: Nessuno , \text{  Asintoti Orizzontali}: Nessuno ,  \text{  Massimi}: (1, -1),   \text{  Minimi}: (1, -5),   \text{  Punti di Flesso}: Nessuno$ ]}\\\\
+
+\textbf{Esercizio 5 (Integrali Indefiniti)}:\\
+\par $\int e^x \sin x  dx$ \\\\
+
+\textit{[ Soluzione: $\int e^x \sin x  dx = \frac{1}{2}(e^x\sin x - e^x\cos x) + C$ ]}\\\\
+
+\textbf{Esercizio 6 (Integrali Indefiniti)}:\\
+\par $\int \frac{1}{1 + x^2}  dx$ \\\\
+
+\textit{[ Soluzione: $\int \frac{1}{1 + x^2}  dx = \arctan x + C$ ]}\\\\
+
+\textbf{Esercizio 7 (Calcolo Area con Integrali)}:\\
+\par $\int_{-1}^{1} e^x + 2x  dx$ \\\\
+
+\textit{[ Soluzione: $e + 3$ ]}\\\\
+
+\textbf{Esercizio 8 (Calcolo Area con Integrali)}:\\
+\par $\text{Calcola l'area sottesa alla curva } g(x) = 4 - x^2 \text{ nell'intervallo } [-2, 2]$ \\\\
+
+\textit{[ Soluzione: $\frac{32}{3}$ ]}\\\\
+
+\textbf{Esercizio 9 (Integrali Casi Particolari)}:\\
+\par $\int \sqrt{x^2-1}  dx$ \\\\
+
+\textit{[ Soluzione: $\int \sqrt{x^2-1}  dx = \int \sinh^2(t) dt \text{ (con } x=\cosh(t))=x\sqrt{x^2-1}-\int \frac{x^2}{\sqrt{x^2-1}} dx \text{(per parti)}=x\sqrt{x^2-1}-\int \frac{x^2-1}{\sqrt{x^2-1}} dx+\int \frac{1}{\sqrt{x^2-1}} dx=\frac{1}{2}(x \sqrt{x^2-1}-\log{\sqrt{x^2-1} + x}) + C$ ]}\\\\
+
+\textbf{Esercizio 10 (Integrali Casi Particolari)}:\\
+\par $\int \sqrt{1-x^2} dx$ \\\\
+
+\textit{[ Soluzione: $\int \sqrt{1-x^2}  dx = \int \sin^2(t) dt \text{ (con } x=\sin(t))=\frac{1}{2}(\sqrt{1-x^2}+\arcsin x) + C$ ]}\\\\
+
+\end{document}
