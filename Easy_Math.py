@@ -538,6 +538,9 @@ class GeneratoreVerifiche:
          # Sostituisci il simbolo di integrale
         text = re.sub(r'\\int', '\u222b', text)
 
+        text = re.sub(r'\\begin{cases}', '{', text)
+        text = re.sub(r'\\end{cases}', '', text)
+
         # Sostituisci il pattern per la frazione
         text = re.sub(r'\\frac{(.*?)}{(.*?)}', r'\1/\2', text)
 
@@ -582,6 +585,10 @@ class GeneratoreVerifiche:
 
         # Sostituzione di "\\quad x \\neq \\pm x" con "x ≠ ± "
         text = re.sub(r'\\pm', '±', text)
+
+        text = re.sub(r'\\geq', '>=', text)
+
+        text = re.sub(r'\\leq', '<=', text)
 
 
 
@@ -682,6 +689,7 @@ class GeneratoreVerifiche:
                     esercizio = self.esercizi_generati[indice]
                     argomento = esercizio['argomento']
                     argomento=argomento.replace("1°","\\ang{1}")
+                    argomento=argomento.replace("2°","\\ang{2}")
                     testo_esercizio = esercizio['esercizio']
                     soluzione = esercizio['soluzione']
                     file_latex.write('\\textbf{Esercizio '+str(a)+' ('+argomento+')}:'+'\\\\'+ '\n')
@@ -745,8 +753,6 @@ class GeneratoreVerifiche:
                 return opzione_selezionata,tipo_materia,argomento,num_esercizi
             else:
                 return None
-
-
 
     def leggi_esercizi_da_json(self,json_path, tipo_argomento):
         esercizi = []
