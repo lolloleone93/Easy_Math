@@ -33,70 +33,112 @@ class PrimaFinestra:
     def __init__(self, root):
         self.root = root
         self.root.title("Easy Math")
-
         # Imposta le dimensioni della finestra principale
-        self.root.geometry("518x865")  # Modifica le dimensioni secondo necessità
+        self.root.geometry("550x880+400+50")  # Modifica le dimensioni secondo necessità
+        
+        # Funzione per creare la finestra
+        self.create_main_window()
+         
+    
+        # Aggiorna il layout per risolvere il problema delle barre di scorrimento bloccate
+        self.frame.bind("<Configure>", self.on_configure)    
+        self.canvas.update_idletasks()
+    
+        
+
+        # Tracciano eventi di click sulla finestra
+        self.opzione_var.trace_add("write", self.aggiorna_primo_menu) 
+        self.tipo_scuola_var.trace_add("write", self.aggiorna_materia_menu)
+        self.opzione_var.trace_add("write", self.aggiorna_materia_menu)
+        self.tipo_scuola_var.trace_add("write", self.aggiorna_argomenti_menu)
+        self.materia_var.trace_add("write", self.aggiorna_argomenti_menu)
+        self.opzione_var.trace_add("write", self.aggiorna_argomenti_menu)
+        self.argomenti_var.trace_add("write", self.aggiorna_lista_file)
+        self.opzione_var.trace_add("write", self.aggiorna_lista_file)
+        self.update_combobox()
+        self.search_entry.bind("<FocusIn>", self.clear_placeholder)
+        self.search_entry.bind("<FocusOut>", self.restore_placeholder)
+        self.search_entry.bind("<KeyRelease>", self.filter_items)
+
+    def create_main_window(self):
+
+        # Creazione di una barra di scorrimento verticale
+        self.y_scrollbar = tk.Scrollbar(self.root, orient="vertical")
+        self.y_scrollbar.pack(side="right", fill="y")
+
+        # Creazione di un canvas per contenere il frame
+        self.canvas = tk.Canvas(self.root, yscrollcommand=self.y_scrollbar.set)
+        self.canvas.pack(expand=True, fill="both")
+
+        # Configurazione della barra di scorrimento
+        self.y_scrollbar.config(command=self.canvas.yview)
+
+        # Creazione di uno stile per il frame senza bordi
+        style = ttk.Style()
+        style.configure("NoBorder.TFrame", borderwidth=0)
+
+        # Creazione del frame senza bordi
+        self.frame = ttk.Frame(self.root, style="NoBorder.TFrame")
+        self.frame.pack(expand=True, fill="both")
+
+
+        # Creazione di un frame contenente i tuoi widget (button, combobox, ecc.)
+        #self.frame = tk.Frame(self.canvas,takefocus=False)
+        self.canvas.create_window((0, 0), window=self.frame, anchor='nw')
 
         row_init=0
         column_init=0
-
-
         # 1. Option Button per Teoria ed Esercizi
         self.opzione_var = tk.StringVar()
         self.opzione_var.set("Teoria")
 
-
-        opzione1 = tk.Radiobutton(root, text="Teoria", variable=self.opzione_var, value="Teoria")
-        opzione2 = tk.Radiobutton(root, text="Esercizi", variable=self.opzione_var, value="Esercizi")
+        opzione1 = tk.Radiobutton(self.frame, text="Teoria", variable=self.opzione_var, value="Teoria",takefocus=False)
+        opzione2 = tk.Radiobutton(self.frame, text="Esercizi", variable=self.opzione_var, value="Esercizi",takefocus=False)
         opzione1.grid(row=row_init, column=column_init, padx=(50, 10), pady=10, sticky="e")
         opzione2.grid(row=row_init, column=column_init+1, padx=(10, 50), pady=10, sticky="w")
 
         # Aggiungi una label per il tipo di scuola
-        label_tipo_scuola = tk.Label(root, text="Livello Scuola:")
+        label_tipo_scuola = tk.Label(self.frame, text="Livello Scuola:")
         label_tipo_scuola.grid(row=row_init+1, column=column_init, padx=10, pady=5, sticky="w")
 
         # 2. Menù a tendina per Tipo Scuola
         self.tipo_scuola_var = tk.StringVar()
-        self.tipo_scuola_menu = ttk.Combobox(root, textvariable=self.tipo_scuola_var, state="readonly",width=70)
+        self.tipo_scuola_menu = ttk.Combobox(self.frame, textvariable=self.tipo_scuola_var, state="readonly",width=70,takefocus=False)
         self.tipo_scuola_menu.grid(row=row_init+2, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
 
-
         # Aggiungi una label per il tipo di materia
-        label_tipo_materia = tk.Label(root, text="Materia:")
+        label_tipo_materia = tk.Label(self.frame, text="Materia:")
         label_tipo_materia.grid(row=row_init+3, column=column_init, padx=10, pady=5, sticky="w")
         # 3. Menù a tendina per Matera
         self.materia_var = tk.StringVar()
-        self.materia_menu = ttk.Combobox(root, textvariable=self.materia_var, state="readonly",width=70)
-        
+        self.materia_menu = ttk.Combobox(self.frame, textvariable=self.materia_var, state="readonly",width=70,takefocus=False)
         self.materia_menu.grid(row=row_init+4, column=column_init, pady=5, padx=10)  # Modifica le dimensioni secondo necessità
         self.materia_menu.grid(row=row_init+4, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
 
-
-      
-        label_tipo_argomenti = tk.Label(root, text="Argomenti:")
+        # Aggiungi una label per il tipo di Argomenti
+        label_tipo_argomenti = tk.Label(self.frame, text="Argomenti:")
         label_tipo_argomenti.grid(row=row_init+6, column=column_init, padx=10, pady=5, sticky="w")
+
         # 3. Menù a tendina per Argomenti
         self.argomenti = []
         self.filtered_argomenti = []
         self.argomenti_var = tk.StringVar()
-        self.argomenti_menu = ttk.Combobox(root, textvariable=self.argomenti_var, state="readonly",width=70)
+        self.argomenti_menu = ttk.Combobox(self.frame, textvariable=self.argomenti_var, state="readonly",width=70,takefocus=False)
+        self.argomenti_menu.grid(row=row_init+8, column=column_init, pady=5, padx=10)  # Modifica le dimensioni secondo necessità
+        self.argomenti_menu.grid(row=row_init+8, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
         
-        self.search_entry = tk.Entry(root, width=70,foreground="gray", font=("Arial", 10, "italic"))
+         #Barra di Ricerca
+        self.search_entry = tk.Entry(self.frame, width=70,foreground="gray", font=("Arial", 10, "italic"),takefocus=False)
         self.search_entry.insert(0, "Cerca...")
         self.search_entry.grid(row=row_init+7, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
 
-
-        self.argomenti_menu.grid(row=row_init+8, column=column_init, pady=5, padx=10)  # Modifica le dimensioni secondo necessità
-        self.argomenti_menu.grid(row=row_init+8, column=column_init, pady=5, padx=10, columnspan=2, sticky="ew")
-
-
-
         # 4. Listbox per selezionare i file
-        self.file_listbox = tk.Listbox(root, selectmode=tk.SINGLE, width=70, height=30)  # Modifica le dimensioni secondo necessità
+        self.file_listbox = tk.Listbox(self.frame, selectmode=tk.SINGLE, width=70, height=30)  # Modifica le dimensioni secondo necessità
         self.file_listbox.grid(row=row_init+10, column=column_init, pady=5, padx=10)  # Modifica le dimensioni secondo necessità
         self.file_listbox.grid(row=row_init+10, column=column_init, pady=5, padx=10, columnspan=3, sticky="ew")
+        
         # 5. Tasto Apri
-        apri_tasto = tk.Button(root, text="Apri", width=30, height=5, command=self.apri_file_selezionato)
+        apri_tasto = tk.Button(self.frame, text="Apri", width=30, height=5, command=self.apri_file_selezionato)
         apri_tasto.grid(row=row_init+15, column=column_init, padx=10,pady=5, columnspan=2, sticky="ew")
 
         # 6. Menu in cima
@@ -117,26 +159,8 @@ class PrimaFinestra:
         nomi_cartelle = [nome for nome in os.listdir(path_teoria) if os.path.isdir(os.path.join(path_teoria, nome))]
         self.tipo_scuola_menu["values"] = nomi_cartelle
 
-        # Collega la funzione di aggiornamento del secondo menù all'evento di cambio del primo menù
-        #self.tipo_scuola_menu.bind("<<ComboboxSelected>>", self.aggiorna_argomenti_menu)
-
-        self.opzione_var.trace_add("write", self.aggiorna_primo_menu) 
-
-
-        self.tipo_scuola_var.trace_add("write", self.aggiorna_materia_menu)
-        self.opzione_var.trace_add("write", self.aggiorna_materia_menu)
-
-        self.tipo_scuola_var.trace_add("write", self.aggiorna_argomenti_menu)
-        self.materia_var.trace_add("write", self.aggiorna_argomenti_menu)
-        self.opzione_var.trace_add("write", self.aggiorna_argomenti_menu)
-
-        self.argomenti_var.trace_add("write", self.aggiorna_lista_file)
-        self.opzione_var.trace_add("write", self.aggiorna_lista_file)
-
-        self.update_combobox()
-        self.search_entry.bind("<FocusIn>", self.clear_placeholder)
-        self.search_entry.bind("<FocusOut>", self.restore_placeholder)
-        self.search_entry.bind("<KeyRelease>", self.filter_items)
+    def on_configure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
 
     def update_combobox(self):
         tipo_scuola_selezionato = self.tipo_scuola_menu.get()
@@ -283,11 +307,52 @@ class GeneratoreVerifiche:
         self.root = tk.Toplevel(root)
         self.root.title("Generatore Verifiche")
         self.root.geometry("770x800")
+                # Funzione per creare la finestra
+        #self.create_second_window()
+
+
+
+   
+        # Creazione di una barra di scorrimento verticale
+        self.y_scrollbar = tk.Scrollbar(self.root, orient="vertical")
+        self.y_scrollbar.pack(side="right", fill="y")
+    
+        # Creazione di un canvas per contenere il frame
+        self.canvas = tk.Canvas(self.root, yscrollcommand=self.y_scrollbar.set)
+        self.canvas.pack(expand=True, fill="both")
+    
+        # Configurazione della barra di scorrimento
+        self.y_scrollbar.config(command=self.canvas.yview)
+
+
+        # Creazione di uno stile per il frame senza bordi
+        style = ttk.Style()
+        style.configure("NoBorder.TFrame", borderwidth=0)
+
+        # Creazione del frame senza bordi
+        self.frame = ttk.Frame(self.root, style="NoBorder.TFrame")
+        self.frame.pack(expand=True, fill="both")
+
+    
+        # Creazione di un frame contenente i tuoi widget (button, combobox, ecc.)
+        #self.frame = tk.Frame(self.canvas,takefocus=False)
+        self.canvas.create_window((0, 0), window=self.frame, anchor='nw')
+
+
+    
         self.opzione_media = tk.StringVar(value="Medie")
-        opzione_media_button = ttk.Radiobutton(self.root, text="Medie", variable=self.opzione_media, value="Medie", command=self.aggiorna_tipo_materia_menu)
-        opzione_superiore_button = ttk.Radiobutton(self.root, text="Superiori", variable=self.opzione_media, value="Superiori", command=self.aggiorna_tipo_materia_menu)
+        opzione_media_button = ttk.Radiobutton(self.frame, text="Medie", variable=self.opzione_media, value="Medie", command=self.aggiorna_tipo_materia_menu,takefocus=False)
+        opzione_superiore_button = ttk.Radiobutton(self.frame, text="Superiori", variable=self.opzione_media, value="Superiori", command=self.aggiorna_tipo_materia_menu,takefocus=False)
         self.opzione_media.trace_add("write", self.svuota_combobox) 
-      
+
+    
+        
+    
+        # Pulsanti
+        seleziona_button = ttk.Button(self.frame, text="Mostra Esercizi", command=self.mostra_esercizi,takefocus=False)
+        genera_test_button = ttk.Button(self.frame, text="Genera Test", command=self.genera_test_casuale,takefocus=False)
+        btn_clear = ttk.Button(self.frame, text="Clear", command=self.clear_list_box,takefocus=False)
+    
 
         # Strutture per gli esercizi
         self.strutture = []
@@ -295,51 +360,90 @@ class GeneratoreVerifiche:
             struttura = self.crea_struttura()
             self.strutture.append(struttura)
 
-        # Pulsanti
-        seleziona_button = ttk.Button(self.root, text="Mostra Esercizi", command=self.mostra_esercizi)
-        genera_test_button = ttk.Button(self.root, text="Genera Test", command=self.genera_test_casuale)
-        btn_clear = ttk.Button(self.root, text="Clear", command=self.clear_list_box)
 
         # Posizionamento degli elementi
         opzione_media_button.grid(row=0, column=0, columnspan=2, padx=(50, 10), pady=10,sticky="w")
         opzione_superiore_button.grid(row=0, column=2, columnspan=2,padx=(10, 50), pady=10, sticky="w")
-
+    
         for i, struttura in enumerate(self.strutture):
             struttura.grid(row=i+1, column=0, columnspan=4,padx=7, pady=5)
-
+    
         #self.text_box = scrolledtext.ScrolledText(self.root, width=65, height=10)
-        self.list_box = tk.Listbox(self.root, selectmode=tk.MULTIPLE, width=120, height=30)
+        self.list_box = tk.Listbox(self.frame, selectmode=tk.MULTIPLE, width=120, height=30)
         self.list_box.grid(row=len(self.strutture)+1, column=1, columnspan=2,padx=7, pady=7,rowspan=5)
-
+    
         seleziona_button.grid(row=len(self.strutture)+10, column=0, columnspan=2, pady=10)
         genera_test_button.grid(row=len(self.strutture)+10, column=2, columnspan=2, pady=10)
         btn_clear.grid(row=len(self.strutture)+12, column=2, columnspan=2, pady=10)
-
-
+    
+    
          # Dichiarazione della variabile globale
         self.soluzione_checkbox_var = tk.IntVar()
         # Aggiungi un check box e un testo con l'etichetta "Soluzione"
-        self.soluzione_checkbox = ttk.Checkbutton(self.root, text="Soluzione", variable=self.soluzione_checkbox_var)
+        self.soluzione_checkbox = ttk.Checkbutton(self.frame, text="Soluzione", variable=self.soluzione_checkbox_var,takefocus=False)
         self.soluzione_checkbox.grid(row=len(self.strutture)+10, column=0,columnspan=2, padx=25,pady=10, sticky="w")
-
-
-
+    
          # 6. Menu in cima
         barra_menu = tk.Menu(self.root)
         self.root.config(menu=barra_menu)
-
+    
         # Menu File
         menu_file = tk.Menu(barra_menu, tearoff=0)
         barra_menu.add_cascade(label="File", menu=menu_file)
         menu_file.add_command(label="Esci", command=self.root.destroy)
-
+    
         # Menu Strumenti
         menu_strumenti = tk.Menu(barra_menu, tearoff=0)
         barra_menu.add_cascade(label="Strumenti", menu=menu_strumenti)
         menu_strumenti.add_command(label="Estrai Argomenti da JSON", command=self.estrai_argomenti_json)
         menu_strumenti.add_command(label="Check Duplicati JSON", command=self.find_duplicates)
 
-    
+
+        self.frame.bind("<Configure>", self.on_configure)    
+        self.canvas.update_idletasks()
+
+        
+
+    def crea_struttura(self):
+       
+        struttura = ttk.Frame(self.frame)
+        
+
+        # Rimuovi il quadrato nero dentro dai check button
+        check_button = ttk.Checkbutton(struttura, command=lambda: self.abilita_disabilita_combobox(check_button), takefocus=False)
+        #check_button = ttk.Checkbutton(struttura, command=self.abilita_disabilita_combobox,takefocus=False)
+        tipo_materia_var = tk.StringVar()
+        tipo_materia_label = tk.Label(struttura, text="Tipo Materia", background="lightgray")
+        tipo_materia_menu = ttk.Combobox(struttura, textvariable=tipo_materia_var, values=["Aritmetica", "Geometria","Fisica"], state="disabled", background="lightgray",takefocus=False)
+        argomenti_label = tk.Label(struttura, text="Argomenti", background="lightgray")
+        argomenti_menu = ttk.Combobox(struttura, state="disabled", background="lightgray",width=30,takefocus=False)
+        numeri_label = tk.Label(struttura, text="Numero Esercizi", background="lightgray")
+        numeri_menu = ttk.Combobox(struttura, values=list(range(1, 11)) + ["Tutti"], state="disabled", background="lightgray",takefocus=False)
+
+
+        check_button.grid(row=0, column=0, sticky="w")
+        tipo_materia_label.grid(row=0, column=1, sticky="w")
+        tipo_materia_menu.grid(row=0, column=2, sticky="w")
+        argomenti_label.grid(row=0, column=3, sticky="w")
+        argomenti_menu.grid(row=0, column=4, sticky="w")
+        numeri_label.grid(row=0, column=5, sticky="w")
+        numeri_menu.grid(row=0, column=6, sticky="w")
+
+        # Aggiungi le combobox alla lista delle combobox della struttura
+        struttura.comboboxes = [tipo_materia_menu, argomenti_menu, numeri_menu]
+
+        struttura.tipo_materia_var = tipo_materia_var
+
+        #self.bind_combobox_selected(tipo_materia_menu, self.aggiorna_tipo_argomento,argomenti_menu)
+        # Poi, quando chiami bind_combobox_selected, passa direttamente i widget come argomenti
+        self.bind_combobox_selected(tipo_materia_menu, self.aggiorna_tipo_argomento, argomenti_menu)
+
+
+        return struttura
+
+    def on_configure(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+
     def estrai_argomenti_json(self):
         tipo_scelto =   self.opzione_media.get()
         primo_combobox = self.strutture[0].comboboxes[0]
@@ -362,45 +466,14 @@ class GeneratoreVerifiche:
 
         
         os.startfile(output_file)
-         
-    def crea_struttura(self):
-       
-        struttura = ttk.Frame(self.root)
-        
 
-        # Rimuovi il quadrato nero dentro dai check button
-        check_button = ttk.Checkbutton(struttura, command=self.abilita_disabilita_combobox)
-        tipo_materia_var = tk.StringVar()
-        tipo_materia_label = tk.Label(struttura, text="Tipo Materia", background="lightgray")
-        tipo_materia_menu = ttk.Combobox(struttura, textvariable=tipo_materia_var, values=["Aritmetica", "Geometria"], state="disabled", background="lightgray")
-        argomenti_label = tk.Label(struttura, text="Argomenti", background="lightgray")
-        argomenti_menu = ttk.Combobox(struttura, state="disabled", background="lightgray",width=30)
-        numeri_label = tk.Label(struttura, text="Numero Esercizi", background="lightgray")
-        numeri_menu = ttk.Combobox(struttura, values=list(range(1, 11)) + ["Tutti"], state="disabled", background="lightgray")
+    def bind_combobox_selected(self, widget, callback,*args):
+        widget.bind("<<ComboboxSelected>>", lambda event, arg_combobox=args[0]: callback(event, arg_combobox, *args[1:]))
 
-        check_button.grid(row=0, column=0, sticky="w")
-        tipo_materia_label.grid(row=0, column=1, sticky="w")
-        tipo_materia_menu.grid(row=0, column=2, sticky="w")
-        argomenti_label.grid(row=0, column=3, sticky="w")
-        argomenti_menu.grid(row=0, column=4, sticky="w")
-        numeri_label.grid(row=0, column=5, sticky="w")
-        numeri_menu.grid(row=0, column=6, sticky="w")
-
-        # Aggiungi le combobox alla lista delle combobox della struttura
-        struttura.comboboxes = [tipo_materia_menu, argomenti_menu, numeri_menu]
-
-        struttura.tipo_materia_var = tipo_materia_var
-
-        self.bind_combobox_selected(tipo_materia_menu, self.aggiorna_tipo_argomento, argomenti_menu)
-
-        return struttura
-
-    def bind_combobox_selected(self, widget, callback, *args):
-         widget.bind("<<ComboboxSelected>>", lambda event, arg_combobox=args[0]: callback(event, arg_combobox, *args[1:]))
-
-    def abilita_disabilita_combobox(self):
+    def abilita_disabilita_combobox(self,check_button):
         # Ottieni il check button che ha generato l'evento
-        check_button = self.root.focus_get()
+        #check_button = event.widget
+        #check_button = self.root.focus_get()
         
         # Ottieni la struttura a cui appartiene il check button
         struttura = check_button.master
@@ -416,25 +489,31 @@ class GeneratoreVerifiche:
     # Ottieni il valore dell'opzione button (Medie o Superiore)
         tipo_scelto =   self.opzione_media.get()
 
-        # Imposta il percorso in base alla scelta
-        path_arg=parent_directory+'\\Verifiche Input\\'+tipo_scelto
+   
 
-
-        # Ottieni la lista dei nomi delle cartelle nel percorso
-        nomi_cartelle = [d for d in os.listdir(path_arg) if os.path.isdir(os.path.join(path_arg, d))]
+        if tipo_scelto=='Medie':
+            nomi_cartelle = ["Aritmetica", "Geometria", "Fisica"]
+        elif tipo_scelto=='Superiori':
+            nomi_cartelle = ["Algebra", "Geometria", "Fisica"]
+       
         for struttura in self.strutture:
             prima_combobox = struttura.comboboxes[0]
             prima_combobox["values"] = nomi_cartelle
+            # Imposta takefocus=False per evitare che il focus si attivi
+            prima_combobox.configure(takefocus=False)
+    
     
     def aggiorna_tipo_argomento(self, event, arg_combobox, *args):
+       
+  
+
         idx = arg_combobox.master.grid_info()["row"]
    
         #tipo_materia = args[0].get()
         tipo_scelto =   self.opzione_media.get()
         materia_es = event.widget.get()
-        percorso_json = parent_directory+'\\Verifiche Input\\'+tipo_scelto+'\\'+materia_es
-        json_file = [f for f in os.listdir(percorso_json) if f.endswith('.json')][0]
-        json_path = os.path.join(percorso_json, json_file)
+        json_path = parent_directory+'\\Verifiche Input\\'+materia_es+'_'+tipo_scelto+'_Esercizi.json'
+        #json_path = os.path.join(percorso_json, json_file)
 
         # Leggi il JSON
         if os.path.exists(json_path):
@@ -448,6 +527,12 @@ class GeneratoreVerifiche:
             argomenti_menu = struttura.comboboxes[1]
             argomenti_menu["values"] = argomenti_unici
             argomenti_menu.set("")  # Azzera la selezione precedente
+
+            # Imposta takefocus=False per evitare che il focus si attivi
+            argomenti_menu.configure(takefocus=False)
+ 
+            
+            
         else:
             # Il JSON non esiste, gestisci l'errore o fai qualcos'altro
             pass
@@ -473,9 +558,10 @@ class GeneratoreVerifiche:
             tipo_scuola, tipo_materia, tipo_argomento, num_esercizi = riga
 
             # Costruisci il percorso del JSON
-            percorso_json = parent_directory+'\\Verifiche Input\\'+tipo_scuola+'\\'+tipo_materia
-            json_file = [f for f in os.listdir(percorso_json) if f.endswith('.json')][0]
-            json_path = os.path.join(percorso_json, json_file)
+            #percorso_json = parent_directory+'\\Verifiche Input\\'+tipo_scuola+'\\'+tipo_materia
+            #json_file = [f for f in os.listdir(percorso_json) if f.endswith('.json')][0]
+            #json_path = os.path.join(percorso_json, json_file)
+            json_path = parent_directory+'\\Verifiche Input\\'+tipo_materia+'_'+tipo_scuola+'_Esercizi.json'
           
 
             # Leggi gli esercizi dal JSON
@@ -595,7 +681,6 @@ class GeneratoreVerifiche:
         
         return text
 
-
 ######################crea pdf formato canvas non simboli matematici################################
 
     def crea_file_pdf_canvas(self, path_output, tipo_mat, current_datetime,vettore,selezionati):
@@ -665,6 +750,18 @@ class GeneratoreVerifiche:
 
 ######################crea pdf formato latex con simboli matematici################################
     def crea_file_latex(self, latex_filename_path,selezionati,vettore):
+
+        sostituzioni = {
+                "1°": "\\ang{1}",
+                "2°": "\\ang{2}",
+                "’": "'",
+                "è": "\`e",
+                "é": "\\'e",
+                "à": "\`a",
+                "ò": "\`o",
+            }
+
+
         with open(latex_filename_path, 'w') as file_latex:
             if file_latex.tell() == 0:
             # Se il file è vuoto, aggiungi l'intestazione del documento LaTeX
@@ -688,10 +785,16 @@ class GeneratoreVerifiche:
                 for indice in selezionati:
                     esercizio = self.esercizi_generati[indice]
                     argomento = esercizio['argomento']
-                    argomento=argomento.replace("1°","\\ang{1}")
-                    argomento=argomento.replace("2°","\\ang{2}")
                     testo_esercizio = esercizio['esercizio']
                     soluzione = esercizio['soluzione']
+
+                    for vecchia, nuova in sostituzioni.items():
+                        argomento = argomento.replace(vecchia, nuova)
+                        testo_esercizio = testo_esercizio.replace(vecchia, nuova)
+                        soluzione = soluzione.replace(vecchia, nuova)
+
+
+
                     file_latex.write('\\textbf{Esercizio '+str(a)+' ('+argomento+')}:'+'\\\\'+ '\n')
                     file_latex.write('\\par $'+testo_esercizio+'$ \\\\\\\\'+'\n\n')
                     file_latex.write('\\textit{[ Soluzione: $'+soluzione+ '$ ]}'+'\\\\\\\\'+'\n\n')
@@ -699,9 +802,14 @@ class GeneratoreVerifiche:
             else:        
                 for indice, esercizio in enumerate(vettore):
                     argomento = esercizio['argomento']
-                    argomento=argomento.replace("1°","\\ang{1}")
                     testo_esercizio = esercizio['esercizio']
                     soluzione = esercizio['soluzione']
+                    for vecchia, nuova in sostituzioni.items():
+                        argomento = argomento.replace(vecchia, nuova)
+                        testo_esercizio = testo_esercizio.replace(vecchia, nuova)
+                        soluzione = soluzione.replace(vecchia, nuova)
+
+
                     file_latex.write('\\textbf{Esercizio '+str(indice+1)+' ('+argomento+')}:'+'\\\\'+ '\n')
                     file_latex.write('\\par $'+testo_esercizio+'$ \\\\\\\\'+'\n\n')
                     file_latex.write('\\textit{[ Soluzione: $'+soluzione+ '$ ]}'+'\\\\\\\\'+'\n\n')
