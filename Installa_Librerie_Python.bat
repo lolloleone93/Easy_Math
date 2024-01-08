@@ -1,7 +1,7 @@
 @echo off
 
 :: Lista delle librerie da installare
-set librerie=tkinter pandas os sys re datetime shutil time tqdm
+set librerie=tkinter pandas os sys re datetime shutil reportlab matplotlib time timeit subprocess io json PIL random sympy pdfplumber tqdm
 
 :: Percorso dell'interprete Python
 set python_interpreter=python
