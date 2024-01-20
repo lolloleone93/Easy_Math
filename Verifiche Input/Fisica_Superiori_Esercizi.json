@@ -29,6 +29,96 @@
       "argomento": "Moto Rettilineo Uniforme",
       "esercizio": "\\text{Un'astronave percorre una traiettoria rettilinea a 200,000 km/s. Qual è la distanza percorsa in 10 secondi?}",
       "soluzione": "\\text{Distanza} = \\text{Velocità} \\cdot \\text{Tempo} = 200,000 \\, \\text{km/s} \\cdot 10 \\, \\text{s}"
+    },
+	   {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Trova la formula inversa per il calcolo del tempo (t) dalla formula della velocità (v) nel moto uniformemente accelerato: } v = u + at",
+      "soluzione": "\\text{Formula Inversa: } t = \\frac{v - u}{a}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Calcola il tempo (t) dalla formula della distanza (s) nel moto uniformemente accelerato: } s = ut + \\frac{1}{2}at^2",
+      "soluzione": "\\text{Formula Inversa: } t = \\sqrt{\\frac{2s}{a}}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Trova la formula inversa per il calcolo della forza (F) dalla formula dell'accelerazione (a) nel secondo principio della dinamica: } F = ma",
+      "soluzione": "\\text{Formula Inversa: } a = \\frac{F}{m}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Calcola la velocità finale (v) dalla formula dell'energia cinetica (E_k): } E_k = \\frac{1}{2}mv^2",
+      "soluzione": "\\text{Formula Inversa: } v = \\sqrt{\\frac{2E_k}{m}}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Trova la formula inversa per il calcolo della massa (m) dalla formula dell'energia potenziale gravitazionale (U): } U = mgh",
+      "soluzione": "\\text{Formula Inversa: } m = \\frac{U}{gh}"
+    },
+	    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Calcola la velocità (v) dalla formula dell'impulso (I): } I = Ft",
+      "soluzione": "\\text{Formula Inversa: } v = \\frac{I}{m}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Trova la formula inversa per il calcolo dell'accelerazione (a) dalla formula della forza (F) nel secondo principio della dinamica: } F = ma",
+      "soluzione": "\\text{Formula Inversa: } a = \\frac{F}{m}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Determina la temperatura (T) dalla formula della legge di Charles per i gas: } V = V_0 \\left(1 + \\frac{T}{273.15}\\right)",
+      "soluzione": "\\text{Formula Inversa: } T = 273.15 \\left(\\frac{V}{V_0} - 1\\right)"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Calcola l'energia potenziale elastica (U) dalla formula della costante elastica (k) e dello spostamento (x) di una molla: } U = \\frac{1}{2}kx^2",
+      "soluzione": "\\text{Formula Inversa: } x = \\sqrt{\\frac{2U}{k}}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Trova la formula inversa per il calcolo della pressione (P) dalla legge dei gas ideali: } PV = nRT",
+      "soluzione": "\\text{Formula Inversa: } P = \\frac{nRT}{V}"
+    },
+	    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Trova la formula inversa per il calcolo del tempo (t) dalla formula della velocità (v) nel moto uniformemente accelerato: } v = u + at",
+      "soluzione": "\\text{Formula Inversa: } t = \\frac{v - u}{a}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Calcola la lunghezza d'onda (λ) dalla formula della velocità di propagazione delle onde (v) e dalla frequenza (f): } v = f\\lambda",
+      "soluzione": "\\text{Formula Inversa: } \\lambda = \\frac{v}{f}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Trova la formula inversa per il calcolo della forza gravitazionale (F) dalla legge di gravitazione universale: } F = \\frac{Gm_1m_2}{r^2}",
+      "soluzione": "\\text{Formula Inversa: } r = \\sqrt{\\frac{Gm_1m_2}{F}}"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Determina la densità (ρ) dalla formula della massa (m) e del volume (V): } \\rho = \\frac{m}{V}",
+      "soluzione": "\\text{Formula Inversa: } m = \\rho V"
+    },
+    {
+      "tipo_materia": "Fisica",
+      "argomento": "Formule Inverse",
+      "esercizio": "\\text{Calcola la potenza (P) dalla formula del lavoro (W) e del tempo (t): } W = Pt",
+      "soluzione": "\\text{Formula Inversa: } P = \\frac{W}{t}"
     }
   ]
 }

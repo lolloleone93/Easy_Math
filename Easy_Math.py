@@ -759,6 +759,7 @@ class GeneratoreVerifiche:
                 "é": "\\'e",
                 "à": "\`a",
                 "ò": "\`o",
+                "_":"\\_"
             }
 
 
