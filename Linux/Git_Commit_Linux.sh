@@ -16,5 +16,8 @@ git add .
 # Esegui il commit con il messaggio specificato
 git commit -m "$commit_message"
 
+# Esegui il push
+git push origin main
+
 echo "Commit eseguito con successo."
 
